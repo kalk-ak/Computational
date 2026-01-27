@@ -5,16 +5,21 @@ from pdf2image import convert_from_path
 
 def convert_pdf_to_png(pdf_path: Path):
     """
-    Converts a single PDF to PNG images in the same directory.
-    Returns a list of generated image paths.
+    Converts a single PDF to PNG images in an 'images' subdirectory.
+    Returns a list of generated image paths (relative to the PDF folder).
     """
     generated_images = []
     try:
+        # Create 'images' folder next to the PDF
+        images_dir = pdf_path.parent / "images"
+        images_dir.mkdir(exist_ok=True)
+
         pages = convert_from_path(str(pdf_path), dpi=200)
         for i, page in enumerate(pages, start=1):
-            output_file = pdf_path.with_name(f"{pdf_path.stem}_page{i}.png")
+            output_file = images_dir / f"{pdf_path.stem}_page{i}.png"
             page.save(output_file, "PNG")
-            generated_images.append(output_file)
+            # Store relative path for Markdown
+            generated_images.append(output_file.relative_to(pdf_path.parent))
             print(f"Saved: {output_file}")
     except Exception as e:
         print(f"Failed to convert {pdf_path}: {e}")
@@ -23,22 +28,23 @@ def convert_pdf_to_png(pdf_path: Path):
 
 def write_markdown(images, md_path: Path):
     """
-    Writes a Markdown file with sequential image links.
+    Writes a Markdown file with sequential image links pointing to 'images/' folder.
     """
     with open(md_path, "w") as f:
         for img in images:
-            f.write(f"![{img.name}]({img.name})\n\n")
+            f.write(f"![{img.name}]({img.as_posix()})\n\n")
     print(f"Markdown file created: {md_path}")
 
 
 def recursive_convert_and_markdown(target_name: str):
     """
     Recursively searches for PDFs matching target_name from current directory,
-    converts them to images, and writes a Markdown file with all pages.
+    converts them to images in 'images/' subfolder, and writes a Markdown file
+    with all pages.
     """
     cwd = Path.cwd()
     for pdf_file in cwd.rglob("*.pdf"):
-        if pdf_file.stem.lower() == target_name:
+        if pdf_file.stem.lower() == target_name.lower():
             print(f"Found PDF: {pdf_file}")
             images = convert_pdf_to_png(pdf_file)
             if images:
