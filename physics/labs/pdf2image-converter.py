@@ -38,7 +38,7 @@ def recursive_convert_and_markdown(target_name: str):
     """
     cwd = Path.cwd()
     for pdf_file in cwd.rglob("*.pdf"):
-        if pdf_file.stem == target_name:
+        if pdf_file.stem.lower() == target_name:
             print(f"Found PDF: {pdf_file}")
             images = convert_pdf_to_png(pdf_file)
             if images:
