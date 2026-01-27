@@ -1,0 +1,3 @@
+Trial,config number,mass 1 (g),d(mass 1) (g),mass 2 (g),d (mass 2) (g),v_i (m/s),d(vi) (m/s),v_f(m/s),d(v_f) (m/s),F_pred,d(F_pred),v_f/v_i,d(v_f/v_i)
+1,1,379.6,0.1,179.6,0.1,0.449,0.2,0.311,0.2,,,,
+2,2,179.6,0.1,379.6,0.1,0.801,0.2,0.239,0.2,,,,
