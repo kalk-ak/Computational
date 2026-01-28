@@ -1,1 +1,0 @@
-[View PDF](readme.pdf)
